@@ -4,8 +4,10 @@ let direcciones = [];
 let angulos = [];
 let fondo;
 let rotacionActivada = false;
+let gradosRotacion = 0;
+let anguloObjetivo = 180;
 
-let AMP_MIN = 0.01;
+let AMP_MIN = 0.04;
 let AMP_MAX = 0.1;
 
 let mic;
@@ -13,8 +15,9 @@ let amp;
 let haySonido = false;
 let MuchoSonido = false;
 let imprimir = true;
-
-let rotacionRealizada = false; // Variable para controlar si la rotación ya se realizó
+let PosY = 178;
+let fondoPosX = 0;
+let fondoPosY = 0;
 
 function preload() {
   fondo = loadImage('Fotos/fondo Tecno.jpg');
@@ -26,7 +29,7 @@ function preload() {
 
 function setup() {
   createCanvas(400, 400);
-  
+
   fondo.resize(width, height);
 
   mic = new p5.AudioIn();
@@ -50,66 +53,66 @@ function setup() {
 }
 
 function draw() {
-  image(fondo, 0, 0);
+  // Actualizar la posición del fondo para crear el efecto de movimiento
+  background(fondo);
+  
+  fondoPosX = map(amp, 0, AMP_MIN,0, 10); // Mapear el nivel de amplitud al rango de movimiento del fondo en el eje X
+  fondoPosY = map(amp, 0, AMP_MIN,0, 10); // Mapear el nivel de amplitud al rango de movimiento del fondo en el eje Y
+
+  image(fondo, fondoPosX, fondoPosY); // Dibujar la imagen de fondo con el efecto de movimiento
 
   if (imprimir) {
-    printData(); 
+    printData();
   }
 
   for (let i = 0; i < imagenes.length; i++) {
     push();
-    translate(posicionesX[i], height / 2);
+    translate(posicionesX[i], PosY);
     rotate(angulos[i]);
-    
+
     imageMode(CENTER);
     image(imagenes[i], 0, 0, 80, 350);
-    
+
     pop();
-    
-    if (rotacionActivada && !rotacionRealizada) {
-      angulos[i] += 0.01;
-      
-    }  
+
+    if (rotacionActivada) {
+      angulos[i] = radians(gradosRotacion);
+    }
+
+    if (haySonido && !MuchoSonido) {
+      posicionesX[i] += 10 * direcciones[i];
+
+      if (posicionesX[i] >= 300 || posicionesX[i] <= 100) {
+        direcciones[i] *= -1;
+      }
+    }
   }
-  
+
   amp = mic.getLevel();
   MuchoSonido = amp > AMP_MAX;
-  
-  if (MuchoSonido && !rotacionRealizada) {
-    rotacionActivada = true;
-  } else {
-    rotacionActivada = false;
-    rotacionRealizada = false;
-  }
-  
-  haySonido = !MuchoSonido && amp > AMP_MIN;
 
-  if (haySonido) {
-    posicionesX[0] += 10 * direcciones[0];
-    posicionesX[1] += 20 * direcciones[1];
-    posicionesX[2] -= 10 * direcciones[2];
-    posicionesX[3] -= 20 * direcciones[3];
-    
-    if (posicionesX[0] >= 300 || posicionesX[0] <= 100) {
-      direcciones[0] *= -1;
+  if (MuchoSonido && !rotacionActivada) {
+    rotacionActivada = true;
+    if (gradosRotacion === 0) {
+      anguloObjetivo = 180;
+    } else {
+      anguloObjetivo = 0;
     }
-    if (posicionesX[1] >= 300 || posicionesX[1] <= 100) {
-      direcciones[1] *= -1;
-    }
-    if (posicionesX[2] >= 300 || posicionesX[2] <= 100) {
-      direcciones[2] *= -1;
-    }
-    if (posicionesX[3] >= 300 || posicionesX[3] <= 100) {
-      direcciones[3] *= -1;
+  }
+
+  haySonido = amp > AMP_MIN;
+
+  if (rotacionActivada) {
+    if (gradosRotacion < anguloObjetivo) {
+      gradosRotacion++;
+    } else if (gradosRotacion > anguloObjetivo) {
+      gradosRotacion--;
+    } else {
+      rotacionActivada = false;
     }
   }
 }
 
 function printData() {
- // push();
- // textSize(16);
-//  fill(0);
- // let texto = 'Amplitud: ' + amp;
- // text(texto, 20, 20);
- // pop();
-} 
+  // Código de impresión de datos si es necesario
+}
