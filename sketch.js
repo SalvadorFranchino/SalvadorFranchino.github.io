@@ -8,7 +8,7 @@ let gradosRotacion = 0;
 let anguloObjetivo = 180;
 
 let AMP_MIN = 0.04;
-let AMP_MAX = 0.1;
+let AMP_MAX = 0.2;
 
 let mic;
 let amp;
