@@ -14,7 +14,6 @@ let mic;
 let amp;
 let haySonido = false;
 let MuchoSonido = false;
-let imprimir = true;
 let PosY = 178;
 let fondoPosX = 0;
 let fondoPosY = 0;
@@ -53,17 +52,15 @@ function setup() {
 }
 
 function draw() {
-  // Actualizar la posición del fondo para crear el efecto de movimiento
+
   background(fondo);
   
-  fondoPosX = map(amp, 0, AMP_MIN,0, 10); // Mapear el nivel de amplitud al rango de movimiento del fondo en el eje X
-  fondoPosY = map(amp, 0, AMP_MIN,0, 10); // Mapear el nivel de amplitud al rango de movimiento del fondo en el eje Y
+  fondoPosX = map(amp, 0, AMP_MIN,0, 10); 
+  fondoPosY = map(amp, 0, AMP_MIN,0, 10); 
 
-  image(fondo, fondoPosX, fondoPosY); // Dibujar la imagen de fondo con el efecto de movimiento
+  image(fondo, fondoPosX, fondoPosY);
 
-  if (imprimir) {
-    printData();
-  }
+  
 
   for (let i = 0; i < imagenes.length; i++) {
     push();
@@ -113,6 +110,3 @@ function draw() {
   }
 }
 
-function printData() {
-  // Código de impresión de datos si es necesario
-}
